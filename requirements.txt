@@ -1,0 +1,16 @@
+# Core data/ML (from KAIM-W6 base)
+pandas==2.1.0
+numpy==1.24.0
+scikit-learn==1.3.0
+xgboost==1.7.0
+xverse==0.9.0  # WoE binning for feature engineering
+woe==0.1.0     # Extended WoE support (from KAIM-W6 task-3-woe)
+
+# Viz for notebooks/EDA
+seaborn==0.12.0
+matplotlib==3.7.0
+
+# AWS + deployment
+boto3==1.34.0
+mangum==0.17.0
+flask==2.3.0

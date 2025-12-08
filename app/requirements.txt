@@ -1,0 +1,7 @@
+# API + model inference only (no viz/notebook deps)
+flask==2.3.0
+mangum==0.17.0
+xgboost==1.7.0
+pandas==2.1.0
+boto3==1.34.0
+xverse==0.9.0  # Needed if your preprocess uses WoE
