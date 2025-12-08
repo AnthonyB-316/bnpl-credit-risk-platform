@@ -10,15 +10,16 @@ y = df['Default']
 
 print("Training XGBoost model...")
 model = XGBClassifier(
-    n_estimators=200,
-    max_depth=5,
+    n_estimators=300,
+    max_depth=6,
     learning_rate=0.1,
     random_state=42,
-    eval_metric='logloss'
+    eval_metric='logloss',
+    use_label_encoder=False
 )
 model.fit(X, y)
 
-print("Saving model to app/model.pkl...")
+print("Saving XGBoost model to app/model.pkl...")
 with open('app/model.pkl', 'wb') as f:
     pickle.dump(model, f)
 

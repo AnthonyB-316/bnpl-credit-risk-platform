@@ -1,0 +1,23 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: BNPL Credit Risk API
+
+Resources:
+  RiskApiFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: ../app/
+      Handler: app.handler
+      Runtime: python3.11
+      Timeout: 30
+      Events:
+        Api:
+          Type: Api
+          Properties:
+            Path: /predict
+            Method: post
+
+Outputs:
+  ApiUrl:
+    Description: "API endpoint"
+    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/predict"
