@@ -1,6 +1,5 @@
 AWSTemplateFormatVersion: '2010-09-09'
 Transform: AWS::Serverless-2016-10-31
-Description: BNPL Credit Risk API
 
 Resources:
   RiskApiFunction:
@@ -9,6 +8,8 @@ Resources:
       CodeUri: ../app/
       Handler: app.handler
       Runtime: python3.11
+      Architectures: [arm64]
+      MemorySize: 1024
       Timeout: 30
       Events:
         Api:
@@ -16,8 +17,15 @@ Resources:
           Properties:
             Path: /predict
             Method: post
+      Environment:
+        Variables:
+          S3_BUCKET: !Ref ModelBucket
+
+  ModelBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: bnpl-credit-risk-model-bucket-anthonyb
 
 Outputs:
   ApiUrl:
-    Description: "API endpoint"
     Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/predict"

@@ -1,10 +1,10 @@
 # Core data/ML (from KAIM-W6 base)
 pandas==2.1.0
-numpy==1.24.0
-scikit-learn==1.3.0
-xgboost==1.7.0
-xverse==0.9.0  # WoE binning for feature engineering
-woe==0.1.0     # Extended WoE support (from KAIM-W6 task-3-woe)
+numpy==1.26.4
+scikit-learn==1.5.1
+xgboost==2.1.1
+#xverse==0.9.0  # WoE binning for feature engineering
+woe==0.1.4     # Extended WoE support (from KAIM-W6 task-3-woe)
 
 # Viz for notebooks/EDA
 seaborn==0.12.0
