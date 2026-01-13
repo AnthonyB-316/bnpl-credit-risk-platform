@@ -37,34 +37,61 @@ with tab1:
 
     with col_left:
         st.subheader("Customer Details")
+        st.caption("Use sliders or type exact values")
 
-        avg_purchase = st.slider(
-            "Average Purchase Amount ($)",
-            100, 5000, 1500,
-            help="Typical dollar amount per BNPL purchase"
-        )
-        num_purchases = st.slider(
-            "Number of BNPL Purchases (6 months)",
-            1, 50, 10,
-            help="How many BNPL transactions in the last 6 months"
-        )
-        age = st.slider("Age", 18, 70, 30)
-        annual_income = st.slider(
-            "Annual Income ($)",
-            20000, 200000, 60000,
-            help="Yearly income before taxes"
-        )
-        num_credit_cards = st.slider("Number of Credit Cards", 0, 10, 2)
-        days_late = st.slider(
-            "Worst Payment Delay (days)",
-            0, 90, 0,
-            help="Longest time past due date on any payment"
-        )
-        debt_to_income = st.slider(
-            "Debt-to-Income Ratio",
-            0.0, 1.0, 0.3,
-            help="Monthly debt payments divided by monthly income (0.3 = 30%)"
-        )
+        # Average Purchase Amount
+        col_a, col_b = st.columns([3, 1])
+        with col_a:
+            avg_purchase = st.slider("Average Purchase Amount ($)", 100, 5000, 1500, key="s1",
+                                     help="Typical dollar amount per BNPL purchase")
+        with col_b:
+            avg_purchase = st.number_input("$", 100, 5000, avg_purchase, key="n1", label_visibility="collapsed")
+
+        # Number of Purchases
+        col_a, col_b = st.columns([3, 1])
+        with col_a:
+            num_purchases = st.slider("BNPL Purchases (6 months)", 1, 50, 10, key="s2",
+                                      help="How many BNPL transactions in the last 6 months")
+        with col_b:
+            num_purchases = st.number_input("#", 1, 50, num_purchases, key="n2", label_visibility="collapsed")
+
+        # Age
+        col_a, col_b = st.columns([3, 1])
+        with col_a:
+            age = st.slider("Age", 18, 70, 30, key="s3")
+        with col_b:
+            age = st.number_input("yrs", 18, 70, age, key="n3", label_visibility="collapsed")
+
+        # Annual Income
+        col_a, col_b = st.columns([3, 1])
+        with col_a:
+            annual_income = st.slider("Annual Income ($)", 20000, 200000, 60000, key="s4",
+                                      help="Yearly income before taxes")
+        with col_b:
+            annual_income = st.number_input("$", 20000, 200000, annual_income, key="n4", label_visibility="collapsed")
+
+        # Credit Cards
+        col_a, col_b = st.columns([3, 1])
+        with col_a:
+            num_credit_cards = st.slider("Number of Credit Cards", 0, 10, 2, key="s5")
+        with col_b:
+            num_credit_cards = st.number_input("#", 0, 10, num_credit_cards, key="n5", label_visibility="collapsed")
+
+        # Days Late
+        col_a, col_b = st.columns([3, 1])
+        with col_a:
+            days_late = st.slider("Worst Payment Delay (days)", 0, 90, 0, key="s6",
+                                  help="Longest time past due date on any payment")
+        with col_b:
+            days_late = st.number_input("days", 0, 90, days_late, key="n6", label_visibility="collapsed")
+
+        # Debt-to-Income
+        col_a, col_b = st.columns([3, 1])
+        with col_a:
+            debt_to_income = st.slider("Debt-to-Income Ratio", 0.0, 1.0, 0.3, key="s7",
+                                       help="Monthly debt payments divided by monthly income (0.3 = 30%)")
+        with col_b:
+            debt_to_income = st.number_input("ratio", 0.0, 1.0, debt_to_income, key="n7", label_visibility="collapsed")
 
         calculate = st.button("Calculate Risk", type="primary", use_container_width=True)
 
