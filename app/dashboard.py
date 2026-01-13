@@ -37,61 +37,120 @@ with tab1:
 
     with col_left:
         st.subheader("Customer Details")
-        st.caption("Use sliders or type exact values")
+        st.caption("Use sliders or type exact values - they stay in sync!")
+
+        def sync_slider(key):
+            st.session_state[key] = st.session_state[f"{key}_slider"]
+
+        def sync_input(key):
+            st.session_state[key] = st.session_state[f"{key}_input"]
+
+        # Initialize defaults
+        defaults = {
+            'avg_purchase': 1500, 'num_purchases': 10, 'age': 30,
+            'annual_income': 60000, 'num_credit_cards': 2, 'days_late': 0, 'debt_to_income': 0.3
+        }
+        for key, val in defaults.items():
+            if key not in st.session_state:
+                st.session_state[key] = val
 
         # Average Purchase Amount
         col_a, col_b = st.columns([3, 1])
         with col_a:
-            avg_purchase = st.slider("Average Purchase Amount ($)", 100, 5000, 1500, key="s1",
-                                     help="Typical dollar amount per BNPL purchase")
+            st.slider("Average Purchase Amount ($)", 100, 5000,
+                      value=st.session_state.avg_purchase,
+                      key="avg_purchase_slider", on_change=sync_slider, args=("avg_purchase",),
+                      help="Typical dollar amount per BNPL purchase")
         with col_b:
-            avg_purchase = st.number_input("$", 100, 5000, avg_purchase, key="n1", label_visibility="collapsed")
+            st.number_input("$", 100, 5000,
+                           value=st.session_state.avg_purchase,
+                           key="avg_purchase_input", on_change=sync_input, args=("avg_purchase",),
+                           label_visibility="collapsed")
 
         # Number of Purchases
         col_a, col_b = st.columns([3, 1])
         with col_a:
-            num_purchases = st.slider("BNPL Purchases (6 months)", 1, 50, 10, key="s2",
-                                      help="How many BNPL transactions in the last 6 months")
+            st.slider("BNPL Purchases (6 months)", 1, 50,
+                      value=st.session_state.num_purchases,
+                      key="num_purchases_slider", on_change=sync_slider, args=("num_purchases",),
+                      help="How many BNPL transactions in the last 6 months")
         with col_b:
-            num_purchases = st.number_input("#", 1, 50, num_purchases, key="n2", label_visibility="collapsed")
+            st.number_input("#", 1, 50,
+                           value=st.session_state.num_purchases,
+                           key="num_purchases_input", on_change=sync_input, args=("num_purchases",),
+                           label_visibility="collapsed")
 
         # Age
         col_a, col_b = st.columns([3, 1])
         with col_a:
-            age = st.slider("Age", 18, 70, 30, key="s3")
+            st.slider("Age", 18, 70,
+                      value=st.session_state.age,
+                      key="age_slider", on_change=sync_slider, args=("age",))
         with col_b:
-            age = st.number_input("yrs", 18, 70, age, key="n3", label_visibility="collapsed")
+            st.number_input("yrs", 18, 70,
+                           value=st.session_state.age,
+                           key="age_input", on_change=sync_input, args=("age",),
+                           label_visibility="collapsed")
 
         # Annual Income
         col_a, col_b = st.columns([3, 1])
         with col_a:
-            annual_income = st.slider("Annual Income ($)", 20000, 200000, 60000, key="s4",
-                                      help="Yearly income before taxes")
+            st.slider("Annual Income ($)", 20000, 200000, step=1000,
+                      value=st.session_state.annual_income,
+                      key="annual_income_slider", on_change=sync_slider, args=("annual_income",),
+                      help="Yearly income before taxes")
         with col_b:
-            annual_income = st.number_input("$", 20000, 200000, annual_income, key="n4", label_visibility="collapsed")
+            st.number_input("$", 20000, 200000, step=1000,
+                           value=st.session_state.annual_income,
+                           key="annual_income_input", on_change=sync_input, args=("annual_income",),
+                           label_visibility="collapsed")
 
         # Credit Cards
         col_a, col_b = st.columns([3, 1])
         with col_a:
-            num_credit_cards = st.slider("Number of Credit Cards", 0, 10, 2, key="s5")
+            st.slider("Number of Credit Cards", 0, 10,
+                      value=st.session_state.num_credit_cards,
+                      key="num_credit_cards_slider", on_change=sync_slider, args=("num_credit_cards",))
         with col_b:
-            num_credit_cards = st.number_input("#", 0, 10, num_credit_cards, key="n5", label_visibility="collapsed")
+            st.number_input("#", 0, 10,
+                           value=st.session_state.num_credit_cards,
+                           key="num_credit_cards_input", on_change=sync_input, args=("num_credit_cards",),
+                           label_visibility="collapsed")
 
         # Days Late
         col_a, col_b = st.columns([3, 1])
         with col_a:
-            days_late = st.slider("Worst Payment Delay (days)", 0, 90, 0, key="s6",
-                                  help="Longest time past due date on any payment")
+            st.slider("Worst Payment Delay (days)", 0, 90,
+                      value=st.session_state.days_late,
+                      key="days_late_slider", on_change=sync_slider, args=("days_late",),
+                      help="Longest time past due date on any payment")
         with col_b:
-            days_late = st.number_input("days", 0, 90, days_late, key="n6", label_visibility="collapsed")
+            st.number_input("days", 0, 90,
+                           value=st.session_state.days_late,
+                           key="days_late_input", on_change=sync_input, args=("days_late",),
+                           label_visibility="collapsed")
 
         # Debt-to-Income
         col_a, col_b = st.columns([3, 1])
         with col_a:
-            debt_to_income = st.slider("Debt-to-Income Ratio", 0.0, 1.0, 0.3, key="s7",
-                                       help="Monthly debt payments divided by monthly income (0.3 = 30%)")
+            st.slider("Debt-to-Income Ratio", 0.0, 1.0, step=0.05,
+                      value=st.session_state.debt_to_income,
+                      key="debt_to_income_slider", on_change=sync_slider, args=("debt_to_income",),
+                      help="Monthly debt payments divided by monthly income (0.3 = 30%)")
         with col_b:
-            debt_to_income = st.number_input("ratio", 0.0, 1.0, debt_to_income, key="n7", label_visibility="collapsed")
+            st.number_input("ratio", 0.0, 1.0, step=0.05,
+                           value=st.session_state.debt_to_income,
+                           key="debt_to_income_input", on_change=sync_input, args=("debt_to_income",),
+                           label_visibility="collapsed")
+
+        # Get values from session state
+        avg_purchase = st.session_state.avg_purchase
+        num_purchases = st.session_state.num_purchases
+        age = st.session_state.age
+        annual_income = st.session_state.annual_income
+        num_credit_cards = st.session_state.num_credit_cards
+        days_late = st.session_state.days_late
+        debt_to_income = st.session_state.debt_to_income
 
         calculate = st.button("Calculate Risk", type="primary", use_container_width=True)
 
