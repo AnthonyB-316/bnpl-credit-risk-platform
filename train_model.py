@@ -14,8 +14,7 @@ model = XGBClassifier(
     max_depth=6,
     learning_rate=0.1,
     random_state=42,
-    eval_metric='logloss',
-    use_label_encoder=False
+    eval_metric='logloss'
 )
 model.fit(X, y)
 

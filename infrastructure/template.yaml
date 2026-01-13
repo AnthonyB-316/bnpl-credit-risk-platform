@@ -1,6 +1,12 @@
 AWSTemplateFormatVersion: '2010-09-09'
 Transform: AWS::Serverless-2016-10-31
 
+Parameters:
+  BucketNameSuffix:
+    Type: String
+    Default: anthonyb
+    Description: Suffix for the S3 bucket name (e.g., your username)
+
 Resources:
   RiskApiFunction:
     Type: AWS::Serverless::Function
@@ -17,15 +23,27 @@ Resources:
           Properties:
             Path: /predict
             Method: post
+        Health:
+          Type: Api
+          Properties:
+            Path: /health
+            Method: get
       Environment:
         Variables:
           S3_BUCKET: !Ref ModelBucket
+      Policies:
+        - S3ReadPolicy:
+            BucketName: !Ref ModelBucket
 
   ModelBucket:
     Type: AWS::S3::Bucket
     Properties:
-      BucketName: bnpl-credit-risk-model-bucket-anthonyb
+      BucketName: !Sub "bnpl-credit-risk-model-bucket-${BucketNameSuffix}"
 
 Outputs:
   ApiUrl:
     Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/predict"
+  HealthUrl:
+    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/health"
+  ModelBucketName:
+    Value: !Ref ModelBucket
