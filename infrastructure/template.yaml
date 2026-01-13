@@ -11,12 +11,10 @@ Resources:
   RiskApiFunction:
     Type: AWS::Serverless::Function
     Properties:
-      CodeUri: ../app/
-      Handler: app.handler
-      Runtime: python3.11
+      PackageType: Image
       Architectures: [arm64]
-      MemorySize: 1024
-      Timeout: 30
+      MemorySize: 2048
+      Timeout: 60
       Events:
         Api:
           Type: Api
@@ -34,6 +32,10 @@ Resources:
       Policies:
         - S3ReadPolicy:
             BucketName: !Ref ModelBucket
+    Metadata:
+      Dockerfile: Dockerfile
+      DockerContext: ../app
+      DockerTag: latest
 
   ModelBucket:
     Type: AWS::S3::Bucket
