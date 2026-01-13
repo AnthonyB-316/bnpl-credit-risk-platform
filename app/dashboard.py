@@ -38,13 +38,33 @@ with tab1:
     with col_left:
         st.subheader("Customer Details")
 
-        transaction_amount = st.slider("Transaction Amount ($)", 100, 5000, 1500)
-        transaction_count = st.slider("Transaction Count (6 months)", 1, 50, 10)
+        avg_purchase = st.slider(
+            "Average Purchase Amount ($)",
+            100, 5000, 1500,
+            help="Typical dollar amount per BNPL purchase"
+        )
+        num_purchases = st.slider(
+            "Number of BNPL Purchases (6 months)",
+            1, 50, 10,
+            help="How many BNPL transactions in the last 6 months"
+        )
         age = st.slider("Age", 18, 70, 30)
-        annual_income = st.slider("Annual Income ($)", 20000, 200000, 60000)
+        annual_income = st.slider(
+            "Annual Income ($)",
+            20000, 200000, 60000,
+            help="Yearly income before taxes"
+        )
         num_credit_cards = st.slider("Number of Credit Cards", 0, 10, 2)
-        payment_history_days_late = st.slider("Days Late (worst)", 0, 90, 0)
-        spend_score = st.slider("Spend Score", 0.0, 1.0, 0.5)
+        days_late = st.slider(
+            "Worst Payment Delay (days)",
+            0, 90, 0,
+            help="Longest time past due date on any payment"
+        )
+        debt_to_income = st.slider(
+            "Debt-to-Income Ratio",
+            0.0, 1.0, 0.3,
+            help="Monthly debt payments divided by monthly income (0.3 = 30%)"
+        )
 
         calculate = st.button("Calculate Risk", type="primary", use_container_width=True)
 
@@ -52,14 +72,15 @@ with tab1:
         st.subheader("Risk Assessment")
 
         if calculate and model_loaded:
+            # Map to model features (model was trained with original names)
             input_data = pd.DataFrame([{
-                "TransactionAmount": transaction_amount,
-                "TransactionCount": transaction_count,
+                "TransactionAmount": avg_purchase,
+                "TransactionCount": num_purchases,
                 "Age": age,
                 "AnnualIncome": annual_income,
                 "NumCreditCards": num_credit_cards,
-                "PaymentHistoryDaysLate": payment_history_days_late,
-                "SpendScore": spend_score
+                "PaymentHistoryDaysLate": days_late,
+                "SpendScore": debt_to_income
             }])
 
             prob = model.predict_proba(input_data)[0][1]
@@ -106,6 +127,7 @@ with tab2:
     df = load_default_data()
 
     st.subheader("Dataset Summary")
+    st.caption("Demo dataset of 500 simulated BNPL customers")
 
     # Key metrics
     col1, col2, col3, col4 = st.columns(4)
@@ -147,10 +169,29 @@ with tab2:
         fig.update_layout(showlegend=False, coloraxis_showscale=False, height=300)
         st.plotly_chart(fig, use_container_width=True)
 
-    # Full scrollable data table
+    # Full scrollable data table with better column names
     st.markdown("---")
     st.markdown(f"**Full Dataset** ({len(df)} customers)")
-    st.dataframe(df, use_container_width=True, hide_index=True, height=400)
+
+    # Rename columns for display
+    df_display = df.copy()
+    df_display.columns = [
+        'Avg Purchase ($)',
+        'Num Purchases (6mo)',
+        'Age',
+        'Annual Income ($)',
+        'Credit Cards',
+        'Days Late',
+        'Debt-to-Income',
+        'Defaulted'
+    ]
+    # Convert Default to Yes/No
+    df_display['Defaulted'] = df_display['Defaulted'].map({0: 'No', 1: 'Yes'})
+
+    st.dataframe(df_display, use_container_width=True, hide_index=True, height=400)
+
+    # Legend
+    st.caption("**Defaulted**: Whether the customer failed to repay (Yes = defaulted, No = paid back)")
 
 with tab3:
     st.subheader("Upload Your Own Data")
@@ -159,22 +200,25 @@ with tab3:
     # Show required format
     with st.expander("Required CSV Format"):
         st.markdown("""
-        Your CSV must have these columns:
-        - `TransactionAmount` - Dollar amount (e.g., 1500)
-        - `TransactionCount` - Number of transactions in 6 months (e.g., 10)
-        - `Age` - Customer age (e.g., 30)
-        - `AnnualIncome` - Yearly income (e.g., 60000)
-        - `NumCreditCards` - Number of credit cards (e.g., 2)
-        - `PaymentHistoryDaysLate` - Worst payment delay in days (e.g., 0)
-        - `SpendScore` - Spending behavior score 0-1 (e.g., 0.5)
+        Your CSV must have these columns (use exact names):
+
+        | Column | Description | Example |
+        |--------|-------------|---------|
+        | `TransactionAmount` | Average purchase amount ($) | 1500 |
+        | `TransactionCount` | Number of BNPL purchases (6 months) | 10 |
+        | `Age` | Customer age | 30 |
+        | `AnnualIncome` | Yearly income ($) | 60000 |
+        | `NumCreditCards` | Number of credit cards | 2 |
+        | `PaymentHistoryDaysLate` | Worst payment delay (days) | 0 |
+        | `SpendScore` | Debt-to-income ratio (0-1) | 0.3 |
         """)
 
         # Sample download
         sample = pd.DataFrame([
             {"TransactionAmount": 1500, "TransactionCount": 10, "Age": 30,
-             "AnnualIncome": 60000, "NumCreditCards": 2, "PaymentHistoryDaysLate": 0, "SpendScore": 0.5},
+             "AnnualIncome": 60000, "NumCreditCards": 2, "PaymentHistoryDaysLate": 0, "SpendScore": 0.3},
             {"TransactionAmount": 3000, "TransactionCount": 25, "Age": 22,
-             "AnnualIncome": 35000, "NumCreditCards": 4, "PaymentHistoryDaysLate": 15, "SpendScore": 0.8},
+             "AnnualIncome": 35000, "NumCreditCards": 4, "PaymentHistoryDaysLate": 15, "SpendScore": 0.6},
         ])
         st.download_button(
             "Download Sample CSV",
