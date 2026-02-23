@@ -17,7 +17,7 @@ def load_model():
 
 @st.cache_data
 def load_data():
-    return pd.read_csv("bnpl_sample_1000.csv")
+    return pd.read_csv("bnpl_credit_30k.csv")
 
 try:
     model = load_model()
@@ -189,7 +189,7 @@ with tab2:
     st.caption("Payment history dominates - a single late payment is the strongest predictor of future default.")
 
     st.markdown("---")
-    with st.expander("View Sample Data (1,000 of 30,000 records)"):
+    with st.expander("View Raw Data (30,000 records)"):
         st.dataframe(df, use_container_width=True, hide_index=True)
 
 st.divider()
