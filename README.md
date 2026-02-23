@@ -1,12 +1,24 @@
-# BNPL Credit Risk Scoring Platform
+# BNPL Credit Risk Scoring
 
-**Live local demo** → `streamlit run app/dashboard.py`
+Credit scoring model for Buy Now Pay Later applications. Predicts default risk based on income, credit history, and transaction patterns.
 
-Serverless-ready AWS Lambda + API Gateway version in `infrastructure/` (deploy with `./deploy.sh` when you have AWS account)
+## Run it
 
-- 500-row realistic BNPL dataset  
-- XGBoost model (same as production fintech teams)  
-- Interactive Streamlit dashboard  
-- One-click AWS SAM deployment (optional)
+```bash
+pip install -r requirements.txt
+streamlit run app/dashboard.py
+```
 
-Built from tedoaba/KAIM-W6 • Python • scikit-learn • XGBoost • Streamlit • AWS SAM
+The dashboard lets you input applicant data and see the risk score + feature breakdown.
+
+## How it works
+
+XGBoost classifier trained on 500 synthetic BNPL applications. Features include debt-to-income ratio, payment history, account age, etc.
+
+## AWS deployment
+
+There's an AWS SAM template in `infrastructure/` if you want to deploy it as a Lambda function. Just run `./deploy.sh` with your AWS credentials configured.
+
+## Stack
+
+Python, XGBoost, Streamlit, AWS SAM
