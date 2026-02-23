@@ -1,7 +1,7 @@
 import streamlit as st
 import pandas as pd
 import pickle
-import os
+from pathlib import Path
 import plotly.express as px
 import plotly.graph_objects as go
 
@@ -10,17 +10,31 @@ st.set_page_config(page_title="BNPL Credit Risk Scoring", layout="wide")
 st.title("BNPL Credit Risk Scoring Platform")
 st.markdown("Predict default probability for Buy Now Pay Later customers using XGBoost.")
 
+# Get the app directory (where this file lives)
+APP_DIR = Path(__file__).parent
+ROOT_DIR = APP_DIR.parent
+
 # Load model
 @st.cache_resource
 def load_model():
-    model_path = os.path.join(os.path.dirname(__file__), "model.pkl")
-    with open(model_path, "rb") as f:
-        return pickle.load(f)
+    # Try app folder first, then root
+    for path in [APP_DIR / "model.pkl", ROOT_DIR / "model.pkl"]:
+        if path.exists():
+            with open(path, "rb") as f:
+                return pickle.load(f)
+    raise FileNotFoundError("model.pkl not found")
 
 @st.cache_data
 def load_default_data():
-    data_path = os.path.join(os.path.dirname(__file__), "..", "data", "bnpl_sample_500.csv")
-    return pd.read_csv(data_path)
+    # Try multiple locations
+    for path in [
+        ROOT_DIR / "data" / "bnpl_sample_500.csv",
+        ROOT_DIR / "bnpl_sample_500.csv",
+        APP_DIR / "bnpl_sample_500.csv"
+    ]:
+        if path.exists():
+            return pd.read_csv(path)
+    raise FileNotFoundError("bnpl_sample_500.csv not found")
 
 try:
     model = load_model()
